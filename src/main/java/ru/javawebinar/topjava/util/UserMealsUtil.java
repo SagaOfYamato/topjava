@@ -69,6 +69,7 @@ public class UserMealsUtil {
                         caloriesForEachDay.get(x.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
+
     public static List<UserMealWithExcess> filteredByOptional2Cycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesForEachDay = new HashMap<>();
         List<UserMealWithExcess> mealWithExcesses = new ArrayList<>();

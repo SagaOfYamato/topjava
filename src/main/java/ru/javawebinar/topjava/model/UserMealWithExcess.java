@@ -11,6 +11,10 @@ public class UserMealWithExcess {
 
     private boolean excess;
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     public void setExcess(boolean excess) {
         this.excess = excess;
     }

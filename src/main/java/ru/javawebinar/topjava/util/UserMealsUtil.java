@@ -79,23 +79,22 @@ public class UserMealsUtil {
             @Override
             public BiConsumer<Map<LocalDate, List<UserMeal>>, UserMeal> accumulator() {
                 return (mealsByDaysMap, userMeal) -> {
-                    mealsByDaysMap.putIfAbsent(userMeal.getDateTime().toLocalDate(), new ArrayList<>());
-                    if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
-                        mealsByDaysMap.get(userMeal.getDateTime().toLocalDate()).add(userMeal);
                     caloriesForEachDay.merge(userMeal.getDateTime().toLocalDate(), userMeal.getCalories(), Integer::sum);
+                    if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
+                        mealsByDaysMap.computeIfAbsent(userMeal.getDateTime().toLocalDate(), localDateKey ->
+                                new ArrayList<>()).add(userMeal);
+                    }
                 };
             }
 
             @Override
-            public BinaryOperator<Map<LocalDate, List <UserMeal>>> combiner() {
+            public BinaryOperator<Map<LocalDate, List<UserMeal>>> combiner() {
                 return (map1, map2) -> {
-                    map2.forEach((k, v) ->
-                    {
-                        if (map1.containsKey(k)) {
-                            map1.get(k).addAll(v);
-                        } else
-                            map1.put(k, v);
-                    });
+                    map2.forEach((localDate, userMealList) ->
+                            map1.merge(localDate, userMealList, (userMealList1, userMealList2) -> {
+                                userMealList1.addAll(userMealList2);
+                                return userMealList1;
+                            }));
                     return map1;
                 };
             }

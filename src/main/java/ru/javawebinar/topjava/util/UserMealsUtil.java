@@ -93,7 +93,8 @@ public class UserMealsUtil {
                     {
                         if (map1.containsKey(k)) {
                             map1.get(k).addAll(v);
-                        }
+                        } else
+                            map1.put(k, v);
                     });
                     return map1;
                 };
@@ -115,6 +116,6 @@ public class UserMealsUtil {
                 return EnumSet.of(Characteristics.CONCURRENT);
             }
         }
-        return meals.stream().collect(new MealCollector());
+        return meals.stream().parallel().collect(new MealCollector());
     }
 }

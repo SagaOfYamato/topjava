@@ -69,7 +69,7 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByOptional2Streams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         class MealCollector implements Collector<UserMeal, Map<LocalDate, List <UserMeal>>, List<UserMealWithExcess>> {
-            final private Map<LocalDate, Integer> caloriesForEachDay = new ConcurrentHashMap<>();
+            private final Map<LocalDate, Integer> caloriesForEachDay = new ConcurrentHashMap<>();
 
             @Override
             public Supplier<Map<LocalDate, List <UserMeal>>> supplier() {

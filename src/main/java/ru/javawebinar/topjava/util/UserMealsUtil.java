@@ -7,11 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserMealsUtil {
@@ -33,15 +29,16 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByOptional2Cycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> caloriesForEachDay = new ConcurrentHashMap<>();
-        List<UserMealWithExcess> mealWithExcesses = new CopyOnWriteArrayList<>();
-        Map<LocalDate, AtomicBoolean> excessForEachDay = new ConcurrentHashMap<>();
+        Map<LocalDate, Integer> caloriesForEachDay = new HashMap<>();
+        List<UserMealWithExcess> mealWithExcesses = new ArrayList<>();
+        Map<LocalDate, AtomicBoolean> excessForEachDay = new HashMap<>();
 
         for (UserMeal userMeal : meals) {
             LocalDate mealDate = userMeal.getDateTime().toLocalDate();
             caloriesForEachDay.merge(mealDate, userMeal.getCalories(), Integer::sum);
-            excessForEachDay.merge(mealDate, new AtomicBoolean(caloriesForEachDay.get(mealDate) > caloriesPerDay), (excess1, excess2) -> {
-                excess1.lazySet(caloriesForEachDay.get(mealDate) > caloriesPerDay);
+            boolean excess = caloriesForEachDay.get(mealDate) > caloriesPerDay;
+            excessForEachDay.merge(mealDate, new AtomicBoolean(excess), (excess1, excess2) -> {
+                excess1.lazySet(excess);
                 return excess1;
             });
 

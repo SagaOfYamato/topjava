@@ -19,6 +19,10 @@
 <hr>
 <h2>Meals</h2>
 
+<ul>
+    <a href="${pageContext.request.contextPath}/addMeal.jsp">AddMeal</a>
+</ul>
+
 <h1>
     <%
         List<Meal> meals = (List<Meal>) request.getAttribute("meals");
@@ -31,6 +35,8 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
 
     <c:forEach var="mealTo" items="${mealsTo}">
@@ -38,6 +44,8 @@
         <td>${mealTo.date}${" "}${mealTo.time}</td>
         <td>${mealTo.description}</td>
         <td>${mealTo.calories}</td>
+            <td><a href="${pageContext.request.contextPath}/updateMeal.jsp">Update</a></td>
+            <td><a href="${pageContext.request.contextPath}/deleteMeal.jsp">Delete</a></td>
         <tr>
     </c:forEach>
 </table>

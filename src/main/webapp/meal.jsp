@@ -11,6 +11,7 @@
 <h1> Add or update meal </h1>
 
 <form method="POST" action="<c:url value="/meals"/>" name="frmAddUser">
+    <input type="hidden" name="id" value="${meal.id}">
     DateTime : <input
         type="datetime-local" name="dateTime"
         value="<c:out value="${meal.dateTime}" />" /> <br />
@@ -20,8 +21,8 @@
     Calories : <input
         type="number" name="calories"
         value="<c:out value="${meal.calories}" />" /> <br />
-        <input type="submit" value="Submit" name="subm"/>
-    <input type="submit" value="Cancel" name="canc"/>
+        <button type="submit">Submit</button>
+        <button onclick="window.history.back()">Cancel</button>
 </form>
 </body>
 </html>

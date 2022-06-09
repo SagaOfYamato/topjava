@@ -32,11 +32,6 @@ public class MealRepositoryMemory implements MealRepository {
     }
 
     @Override
-    public Meal read(int id) {
-        return mealRepositoryMap.get(id);
-    }
-
-    @Override
     public Meal update(Meal meal) {
         Meal newMeal = mealRepositoryMap.get(meal.getId());
         log.debug("newmeal id = " + newMeal.getId());

@@ -6,17 +6,18 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.MealServlet;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
-    private final AtomicInteger counterOfMeal = new AtomicInteger(0);
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     {
         for (Meal meal : MealsUtil.meals) {
@@ -26,45 +27,48 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
-        if (userId != SecurityUtil.authUserId()) {
-            return null;
-        }
-        if (!repository.containsKey(userId) || repository.get(userId) == null) {
-            Map<Integer, Meal> mealRepository = new ConcurrentHashMap<>();
-            repository.put(userId, mealRepository);
-        }
+        log.info("save {}", meal);
+        repository.computeIfAbsent(userId, (usId) -> new ConcurrentHashMap<>());
+        Map<Integer, Meal> mealById = repository.get(userId);
         if (meal.isNew()) {
-            meal.setId(counterOfMeal.incrementAndGet());
-            repository.get(userId).put(meal.getId(), meal);
+            meal.setId(counter.incrementAndGet());
+            mealById.put(meal.getId(), meal);
             return meal;
         }
-        return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return mealById.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int userId, int id) {
-        if (userId != SecurityUtil.authUserId()) {
-            return false;
-        }
+        log.info("delete {}", id);
         return repository.get(userId).remove(id) != null;
     }
 
     @Override
     public Meal get(int userId, int id) {
-        if (userId != SecurityUtil.authUserId()) {
-            return null;
-        }
+        log.info("get {}", id);
         return repository.get(userId).get(id);
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
-        if (userId != SecurityUtil.authUserId()) {
+    public List<Meal> getAll(int userId) {
+        log.info("getAll");
+        if (!repository.containsKey(userId)) {
             return null;
         }
         List<Meal> mealsByUserId = new ArrayList<>(repository.get(userId).values());
-        mealsByUserId.sort((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()));
+        mealsByUserId.sort(Comparator.comparing(Meal::getDate, Comparator.reverseOrder()));
         return mealsByUserId;
+    }
+
+    @Override
+    public Collection<Meal> filter(int userId, LocalDate startDate, LocalDate endDate) {
+        log.info("filter");
+        List<Meal> mealsByUserId = getAll(userId);
+        return mealsByUserId.stream()
+                .filter(meal -> meal.getDate().compareTo(startDate) >= 0)
+                .filter(meal -> meal.getDate().compareTo(endDate) <= 0)
+                .collect(Collectors.toList());
     }
 }
 

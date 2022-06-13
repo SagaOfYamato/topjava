@@ -3,15 +3,14 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.AbstractNamedEntity;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -22,7 +21,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return true;
+        return repository.remove(id) != null;
     }
 
     @Override
@@ -45,18 +44,24 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        List<User> users = (List<User>) repository.values();
-        users.sort(Comparator.comparing(AbstractNamedEntity::getName));
+        List<User> users = new ArrayList<>(repository.values());
+        users.sort((o1, o2) -> {
+            int compareByName = o1.getName().compareTo(o2.getName());
+            if (compareByName != 0)
+                return compareByName;
+            else {
+                return o1.getEmail().compareTo(o2.getEmail());
+            }
+        });
         return users;
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        for (User user : repository.values()) {
-            if (user.getEmail().equalsIgnoreCase(email))
-                return user;
-        }
-        return null;
+        return repository.values().stream()
+                .filter(user -> user.getEmail().equalsIgnoreCase(email))
+                .findAny()
+                .orElse(null);
     }
 }

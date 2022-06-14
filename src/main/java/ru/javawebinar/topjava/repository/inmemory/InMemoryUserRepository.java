@@ -43,8 +43,9 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        log.info("getAll");
+        log.info("getAll - userRepository");
         List<User> users = new ArrayList<>(repository.values());
+        log.info("getAll - userRepository, values: " + users);
         users.sort((o1, o2) -> {
             int compareByName = o1.getName().compareTo(o2.getName());
             if (compareByName != 0)

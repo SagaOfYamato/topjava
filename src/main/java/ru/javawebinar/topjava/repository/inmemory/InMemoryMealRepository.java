@@ -19,7 +19,7 @@ public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
-    {
+    public InMemoryMealRepository() {
         for (Meal meal : MealsUtil.meals) {
             save(1, meal);
         }
@@ -54,7 +54,7 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         log.info("getAll");
         if (!repository.containsKey(userId)) {
-            return null;
+            return new ArrayList<>();
         }
         List<Meal> mealsByUserId = new ArrayList<>(repository.get(userId).values());
         mealsByUserId.sort(Comparator.comparing(Meal::getDate, Comparator.reverseOrder()));

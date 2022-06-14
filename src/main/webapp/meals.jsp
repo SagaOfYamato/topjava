@@ -20,6 +20,29 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+
+    <form method="get" action="meals">
+        <dl>
+            <dt>От даты (включая)</dt>
+            <dd><input type="date" value="${meal1.date}" name="startDate" ></dd>
+        </dl>
+        <dl>
+            <dt>До даты (включая)</dt>
+            <dd><input type="date" value="${meal1.date}" name="endDate" ></dd>
+        </dl>
+        <dl>
+            <dt>От времени (включая)</dt>
+            <dd><input type="time" value="${meal1.time}" name="startTime" ></dd>
+        </dl>
+        <dl>
+            <dt>До времени (исключая)</dt>
+            <dd><input type="time" value="${meal1.time}" name="endTime" ></dd>
+        </dl>
+        <button type="submit">Save</button>
+        <button onclick="window.history.back()" type="button">Cancel</button>
+    </form>
+
+
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

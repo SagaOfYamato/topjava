@@ -21,7 +21,7 @@
     <hr/>
     <h2>Meals</h2>
 
-    <form method="get" action="meals">
+    <form method="get" action="meals?action=filter">
         <dl>
             <dt>От даты (включая)</dt>
             <dd><input type="date" value="${meal1.date}" name="startDate" ></dd>
@@ -38,7 +38,7 @@
             <dt>До времени (исключая)</dt>
             <dd><input type="time" value="${meal1.time}" name="endTime" ></dd>
         </dl>
-        <button type="submit">Save</button>
+        <button type="submit" name="action" value="filter">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </form>
 

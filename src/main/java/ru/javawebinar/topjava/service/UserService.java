@@ -39,7 +39,6 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        log.info("getAll - userService");
         return repository.getAll();
     }
 

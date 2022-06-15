@@ -15,7 +15,7 @@ public class AdminRestController extends AbstractUserController {
 
     @Override
     public List<User> getAll() {
-        log.info("getAll - adminRestController");
+        log.info("getAll");
         return super.getAll();
     }
 

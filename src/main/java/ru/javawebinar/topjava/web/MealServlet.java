@@ -25,18 +25,19 @@ import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+
+    ConfigurableApplicationContext appCtx;
     private MealRestController mealRestController;
 
     @Override
     public void init() {
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
-            ProfileRestController profileRestController = appCtx.getBean(ProfileRestController.class);
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+            log.info("Bean definition names: {}",Arrays.toString(appCtx.getBeanDefinitionNames()));
+            /*ProfileRestController profileRestController = appCtx.getBean(ProfileRestController.class);
             profileRestController.create(new User(null, "userName=id1", "email@mail.ru", "password", Role.USER));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-            adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
+            adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));*/
             mealRestController = appCtx.getBean(MealRestController.class);
-        }
     }
 
     @Override
@@ -50,7 +51,11 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRestController.create(meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else {
+            mealRestController.update(meal, Integer.parseInt(id));
+        }
         response.sendRedirect("meals");
     }
 
@@ -65,6 +70,16 @@ public class MealServlet extends HttpServlet {
                 mealRestController.delete(id);
                 response.sendRedirect("meals");
                 break;
+            case "filter":
+                log.info("filter");
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
+                String startTime = request.getParameter("startTime");
+                String endTime = request.getParameter("endTime");
+
+                request.setAttribute("meals", mealRestController.filter(startDate, startTime, endDate, endTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
@@ -76,20 +91,7 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                LocalDate startDate = request.getParameter("startDate") == null || request.getParameter("startDate").equals("") ?
-                        LocalDate.MIN : LocalDate.parse(request.getParameter("startDate"));
-                LocalDate endDate = request.getParameter("endDate") == null || request.getParameter("endDate").equals("") ?
-                        LocalDate.MAX : LocalDate.parse(request.getParameter("endDate"));
-                LocalTime startTime = request.getParameter("startTime") == null || request.getParameter("startTime").equals("") ?
-                        LocalTime.MIN : LocalTime.parse(request.getParameter("startTime"));
-                LocalTime endTime = request.getParameter("endTime") == null || request.getParameter("endTime").equals("") ?
-                        LocalTime.MAX : LocalTime.parse(request.getParameter("endTime"));
-
-                if (startDate == LocalDate.MIN && endDate == LocalDate.MAX && startTime == LocalTime.MIN && endTime == LocalTime.MAX) {
-                    request.setAttribute("meals", mealRestController.getAll());
-                } else {
-                    request.setAttribute("meals", mealRestController.filter(startDate, startTime, endDate, endTime));
-                }
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -98,5 +100,10 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
     }
 }

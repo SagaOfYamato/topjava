@@ -5,20 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-import ru.javawebinar.topjava.web.user.AdminRestController;
-import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,12 +26,8 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init() {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-            log.info("Bean definition names: {}",Arrays.toString(appCtx.getBeanDefinitionNames()));
-            /*ProfileRestController profileRestController = appCtx.getBean(ProfileRestController.class);
-            profileRestController.create(new User(null, "userName=id1", "email@mail.ru", "password", Role.USER));
-            AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-            adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));*/
-            mealRestController = appCtx.getBean(MealRestController.class);
+        log.info("Bean definition names: {}", Arrays.toString(appCtx.getBeanDefinitionNames()));
+        mealRestController = appCtx.getBean(MealRestController.class);
     }
 
     @Override
@@ -76,6 +66,9 @@ public class MealServlet extends HttpServlet {
                 String endDate = request.getParameter("endDate");
                 String startTime = request.getParameter("startTime");
                 String endTime = request.getParameter("endTime");
+
+                request.setAttribute("startDate", startDate);
+                request.setAttribute("endDate", endDate);
 
                 request.setAttribute("meals", mealRestController.filter(startDate, startTime, endDate, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);

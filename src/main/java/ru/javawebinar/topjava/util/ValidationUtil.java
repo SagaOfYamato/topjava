@@ -1,10 +1,13 @@
 package ru.javawebinar.topjava.util;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
+    private static final Logger log = LoggerFactory.getLogger(ValidationUtil.class);
 
     public static <T> T checkNotFoundWithId(T object, int id) {
         checkNotFoundWithId(object != null, id);
@@ -12,6 +15,7 @@ public class ValidationUtil {
     }
 
     public static void checkNotFoundWithId(boolean found, int id) {
+        log.info("checkNotFoundWithId, boolean found = {}, int id = {}", found, id);
         checkNotFound(found, "id=" + id);
     }
 
@@ -21,6 +25,7 @@ public class ValidationUtil {
     }
 
     public static void checkNotFound(boolean found, String msg) {
+        log.info("checkNotFound, boolean found = {}, message = {}", found, msg);
         if (!found) {
             throw new NotFoundException("Not found entity with " + msg);
         }

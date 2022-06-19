@@ -33,7 +33,7 @@ public class InMemoryAdminRestControllerSpringTest {
     @Test
     public void delete() {
         controller.delete(USER_ID);
-        Assert.assertNull(repository.get(USER_ID));
+        Assert.assertNull(controller.get(USER_ID));
     }
 
     @Test

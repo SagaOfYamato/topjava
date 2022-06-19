@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,8 +21,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
-    private static final Logger log = LoggerFactory.getLogger(JdbcMealRepository.class);
-
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
     private final JdbcTemplate jdbcTemplate;

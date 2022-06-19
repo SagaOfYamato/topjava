@@ -43,12 +43,12 @@ public class MealServiceTest extends TestCase {
     @Test
     public void get() {
         Meal meal = service.get(MEAL1_ID, USER_ID_IN_MEALTESTDATA);
-        assertMatch(meal, meal1);
+        assertMatch(meal, MEAL_1);
     }
 
     @Test
     public void getNotFound() {
-        assertThrows(NotFoundException.class, () -> service.get(meal8.getId(), USER_ID_IN_MEALTESTDATA));
+        assertThrows(NotFoundException.class, () -> service.get(MEAL_8.getId(), USER_ID_IN_MEALTESTDATA));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class MealServiceTest extends TestCase {
 
     @Test
     public void deletedNotFound() {
-        assertThrows(NotFoundException.class, () -> service.delete(meal8.getId(), USER_ID_IN_MEALTESTDATA));
+        assertThrows(NotFoundException.class, () -> service.delete(MEAL_8.getId(), USER_ID_IN_MEALTESTDATA));
     }
 
     @Test
@@ -67,13 +67,13 @@ public class MealServiceTest extends TestCase {
         LocalDate start = LocalDate.of(2020, Month.JANUARY, 30);
         LocalDate end = LocalDate.of(2020, Month.JANUARY, 30);
         List<Meal> allBetweenInclusive = service.getBetweenInclusive(start, end, USER_ID_IN_MEALTESTDATA);
-        assertMatch(allBetweenInclusive, meal3, meal2, meal1);
+        assertMatch(allBetweenInclusive, MEAL_3, MEAL_2, MEAL_1);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID_IN_MEALTESTDATA);
-        assertMatch(all, meal7, meal6, meal5, meal4, meal3, meal2, meal1);
+        assertMatch(all, MEAL_7, MEAL_6, MEAL_5, MEAL_4, MEAL_3, MEAL_2, MEAL_1);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class MealServiceTest extends TestCase {
 
     @Test
     public void updateNotFound() {
-        assertThrows(NotFoundException.class, () -> service.update(meal8, USER_ID_IN_MEALTESTDATA));
+        assertThrows(NotFoundException.class, () -> service.update(MEAL_8, USER_ID_IN_MEALTESTDATA));
     }
 
     @Test

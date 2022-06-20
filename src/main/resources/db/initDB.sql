@@ -35,4 +35,4 @@ CREATE TABLE meals
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 ALTER TABLE meals
-    ADD CONSTRAINT meals_unique_dateTime UNIQUE (user_id, date_time);
+    ADD CONSTRAINT meals_unique_datetime_userid_idx UNIQUE (user_id, date_time);

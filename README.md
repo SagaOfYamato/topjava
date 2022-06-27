@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bee16f3145654047a0505c62aeefd8a2)](https://www.codacy.com/gh/SagaOfYamato/topjava/dashboard)
+
 Java Enterprise Online Project 
 ===============================
 
@@ -11,8 +13,6 @@ Java Enterprise Online Project
     вы начинаете понимать это
 
     Старинная китайская поговорк
-
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bee16f3145654047a0505c62aeefd8a2)](https://www.codacy.com/gh/SagaOfYamato/topjava/dashboard)
 
 ## <a href="description.md">Описание и план проекта</a>
 ### <a href="http://topjava.herokuapp.com/" target=_blank>Демо разрабатываемого приложения</a>

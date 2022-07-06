@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,15 +15,18 @@ import java.util.List;
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Transactional
-    int deleteMealByIdAndUserId(@Param("id") int id, @Param("userId") int userId);
+    int deleteMealByIdAndUser(@Param("id") int id, @Param("user") User user);
 
-    Meal findMealByIdAndUserId(@Param("id") int id, @Param("userId") int userId);
+    Meal findMealByIdAndUser(@Param("id") int id, @Param("user") User user);
 
-    List<Meal> findAllByUserIdOrderByDateTimeDesc(@Param("userId") int userId);
+    List<Meal> findAllByUserOrderByDateTimeDesc(@Param("user") User user);
 
     @Modifying
     @Query("SELECT m FROM Meal m \n" +
             " WHERE m.user.id=:userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime ORDER BY m.dateTime DESC")
     List<Meal> getBetweenHalfOpen(@Param("userId") int userId, @Param("startDateTime")LocalDateTime startDateTime,
                            @Param("endDateTime")LocalDateTime endDateTime);
+
+    @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id = ?1 and m.user.id = ?2")
+    Meal getWithUser(int id, int userId);
 }

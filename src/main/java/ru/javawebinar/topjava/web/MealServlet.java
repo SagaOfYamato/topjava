@@ -27,7 +27,6 @@ public class MealServlet extends HttpServlet {
     private ConfigurableApplicationContext springContext;
     private MealRestController mealController;
 
-
     @Override
     public void init() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext();
